@@ -9,9 +9,9 @@ import nltk
 from nltk.tree import ParentedTree
 from nltk.parse import stanford
 #from nltk.parse.stanford import StanfordDependencyParser as sdp
-parser1 = stanford.StanfordParser()
+parser1 = nltk.parse.corenlp.CoreNLPParser()
 import SBAR#from nltk.parse.stanford import StanfordDependencyParser as sdp
-from nltk.parse.stanford import StanfordParser as sp
+# from nltk.parse.stanford import StanfordParser as sp
 #os.environ['CLASSPATH']="F:\\Anaconda3\\NLP\\stanford-parser-full-2018-02-27;C:\\Users\\hp\\AppData\\Roaming\\nltk_data\\taggers\\averaged_perceptron_tagger;F:\\Anaconda3\\NLP\\stanford-ner-2015-12-09"
 #For nltk tagger
 '''
@@ -19,7 +19,7 @@ os.environ['CLASSPATH']="F:\\Anaconda3\\NLP\\stanford-parser-full-2018-02-27;F:\
 os.environ['STANFORD_MODELS']="F:\\Anaconda3\\NLP\\stanford-ner-2015-12-09\\classifiers;F:\\Anaconda3\\NLP\\stanford-postagger-full-2015-12-09\\models"
 os.environ['JAVA_HOME']="C:\\Program Files\\Java\\jdk1.8.0_181\\bin"
 '''
-parser=sp()
+parser=nltk.parse.corenlp.CoreNLPParser(tagtype='pos')
 '''
 To traverse thru the tree check the tree first then go on using tree[0][1][1]....[0 or 1] depending
  on deepest part of tree.tree[0](first 0 is fixed) then if we print(tree[0][0]) here we get 'Ram' as output
@@ -47,8 +47,8 @@ sent13="Park workers will plant 41 dogwood trees today and 20 dogwood trees tomo
 sent14="How many dogwood trees will the park have when the workers are finished?"#wrong
 sent15="Dan picked 9 limes and gave Sara 4 of the limes ."
 sent16="This year Diane bought some new hives and increased Diane's honey harvest by 6085 pounds ."
-sent17="By the time the ship is fixed 49952 tons of grain would have spilled into the water ."#wrong
 sent18="Sara had 4 quarters and 8 dimes in Sara's bank ."
+sent17="By the time the ship is fixed 49952 tons of grain would have spilled into the water ."#wrong
 sent19="Mike found 6 seashells and 4 starfishes but 4 of the seashells were broken ."
 sent20="Jessica grew 35 watermelons and 30 carrots but the rabbits ate 27 watermelons ."
 sent21="Park workers had to cut down 13 walnut trees that were damaged ."#wrong
@@ -154,9 +154,9 @@ def split_needed(sent_list):
     return False
     
 def split(sent, cc_tuple):
-    parser = stanford.StanfordParser()
+    parser = nltk.parse.corenlp.CoreNLPParser(tagtype='pos')
     pos_tagged = pos_tag(tokenize(sent)) 
-    tree = next(parser.tagged_parse(pos_tagged)) 
+    tree = next(parser.raw_parse(sent))
     tree1 = ParentedTree.convert(tree)
 #tree.draw()
     count=0
@@ -195,7 +195,7 @@ def split(sent, cc_tuple):
         pos_tagged.insert(index1,(' ,',','))# ', 'is used
         pos_tagged.insert(index1+2,(', ',','))#' ,' is used
 #print(pos_tagged)
-    tree = next(parser.tagged_parse(pos_tagged)) 
+    tree = next(parser.raw_parse(sent))
     p_tree = ParentedTree.convert(tree)
     
     leaf_values = p_tree.leaves()
@@ -343,8 +343,8 @@ for sentence in sentences:
 
 #parse_trees = parser1.tagged_parse(pos_tagged)
 
-    pos_tagged = pos_tag(tokenized_sent)
-    parse_trees = parser.tagged_parse(pos_tagged)
+    pos_tagged = parser.tag(tokenized_sent)
+    parse_trees = parser.raw_parse(sentence)
     tree = next(parse_trees)
     p_tree = ParentedTree.convert(tree)
     #p_tree.draw()

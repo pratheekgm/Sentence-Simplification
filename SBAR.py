@@ -12,9 +12,10 @@ sent5='Ram is a boy who is six years old .'
 sent6='Ram is playing guiter while talking to sita .'
 sent7='Because I was late I became angry .'
 sent=sent7
+from anytree import NodeMixin, Node,AnyNode,RenderTree
+# from nltk.parse.stanford import StanfordParser()
+import nltk
 def simplify(sent):
-	from anytree import NodeMixin, Node,AnyNode,RenderTree
-	from nltk.parse.stanford import StanfordParser
 
 	def make_tree(tree,t,sent_list):
 		#this fn. converts nltk tree to anytree
@@ -25,7 +26,7 @@ def simplify(sent):
 		else:
 			AnyNode(id=str(tree),parent=t)			
 				
-	parser=StanfordParser()
+	parser=nltk.parse.corenlp.CoreNLPParser()
 
 
 	#SBAR CASE
